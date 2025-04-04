@@ -1,61 +1,58 @@
 import time
+import pandas as pd
 import re
-import xml.etree.ElementTree as ET
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime
 
-# ✅ Your Amazon affiliate tag
 AFFILIATE_TAG = "dd1430e-21"
 
-# ✅ Setup Chrome options
-chrome_options = webdriver.ChromeOptions()
-chrome_options.headless = True  # Run in headless mode for GitHub Actions
+# Setup Chrome
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')  # Headless for GitHub Actions
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
-# ✅ Start ChromeDriver
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=chrome_options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-# ✅ Open Amazon Deals Page
+# Go to Amazon
 url = "https://www.amazon.in/deals"
 driver.get(url)
-time.sleep(10)  # Ensure page loads
+time.sleep(10)
 
-# ✅ Extract product links
 deal_elements = driver.find_elements(By.XPATH, '//a[contains(@href, "/dp/")]')
+
 deals = []
-
 for element in deal_elements:
-    normal_link = element.get_attribute("href")
-    if normal_link:
-        match = re.search(r"/dp/([A-Z0-9]{10})", normal_link)
-        if match:
-            product_id = match.group(1)
-            affiliate_link = f"https://www.amazon.in/dp/{product_id}?tag={AFFILIATE_TAG}"
-            deals.append({"Title": f"Amazon Deal - {product_id}", "Link": affiliate_link})
+    href = element.get_attribute("href")
+    match = re.search(r"/dp/([A-Z0-9]{10})", href)
+    if match:
+        product_id = match.group(1)
+        affiliate_link = f"https://www.amazon.in/dp/{product_id}?tag={AFFILIATE_TAG}"
+        deals.append({"Affiliate Link": affiliate_link})
 
-# ✅ Close the browser
 driver.quit()
 
-# ✅ Generate RSS Feed
+# Save as RSS XML
 if deals:
-    rss = ET.Element("rss", version="2.0")
-    channel = ET.SubElement(rss, "channel")
-    ET.SubElement(channel, "title").text = "Amazon Deals RSS Feed"
-    ET.SubElement(channel, "link").text = "https://yourgithubusername.github.io/amazon-deals-feed/amazon_deals.xml"
-    ET.SubElement(channel, "description").text = "Daily updated Amazon deals with affiliate links."
-
-    for deal in deals:
-        item = ET.SubElement(channel, "item")
-        ET.SubElement(item, "title").text = deal["Title"]
-        ET.SubElement(item, "link").text = deal["Link"]
-        ET.SubElement(item, "description").text = "Limited-time deal on Amazon."
-
-    # ✅ Save as XML file
-    tree = ET.ElementTree(rss)
-    tree.write("amazon_deals.xml", encoding="utf-8", xml_declaration=True)
-    print("✅ RSS Feed generated successfully: amazon_deals.xml")
+    with open("amazon_deals.xml", "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8" ?>\n')
+        f.write('<rss version="2.0"><channel>\n')
+        f.write('<title>Amazon Deals Feed</title>\n')
+        f.write('<link>https://www.amazon.in/deals</link>\n')
+        f.write('<description>Latest Amazon India Deals</description>\n')
+        for deal in deals:
+            f.write('<item>\n')
+            f.write(f"<title>Amazon Deal</title>\n")
+            f.write(f"<link>{deal['Affiliate Link']}</link>\n")
+            f.write(f"<guid>{deal['Affiliate Link']}</guid>\n")
+            f.write(f"<pubDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</pubDate>\n")
+            f.write('</item>\n')
+        f.write('</channel></rss>\n')
+    print("✅ amazon_deals.xml RSS file generated.")
 else:
     print("❌ No deals found.")
+
 
