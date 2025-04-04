@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>Amazon Deals Feed</title>
+    <link>https://www.amazon.in/deals</link>
+    <description>Today's top Amazon deals with affiliate links</description>
+    <item>
+      <title>Sample Deal Title</title>
+      <link>https://www.amazon.in/dp/B000000000?tag=dd1430e-21</link>
+      <description>Sample description</description>
+      <guid>https://www.amazon.in/dp/B000000000</guid>
+    </item>
+  </channel>
+</rss>
