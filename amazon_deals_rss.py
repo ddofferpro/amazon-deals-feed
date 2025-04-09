@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-import os
 
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
@@ -64,3 +63,4 @@ if __name__ == "__main__":
         create_rss(deals)
     else:
         print("❌ No deals found.")
+
