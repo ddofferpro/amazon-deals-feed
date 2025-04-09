@@ -1,14 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 
 def extract_deals():
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    }
+    headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(AMAZON_DEALS_URL, headers=headers)
     soup = BeautifulSoup(response.content, "html.parser")
 
@@ -27,8 +24,7 @@ def extract_deals():
                     "guid": affiliate_url,
                     "description": "Top Amazon deal"
                 })
-
-    return items[:10]  # Limit to top 10 deals
+    return items[:10]
 
 def create_rss(deals):
     rss_items = ""
@@ -43,19 +39,18 @@ def create_rss(deals):
         """
 
     rss_feed = f"""<?xml version="1.0" encoding="UTF-8" ?>
-    <rss version="2.0">
-    <channel>
-        <title>Amazon Deals Feed</title>
-        <link>{AMAZON_DEALS_URL}</link>
-        <description>Today's top Amazon deals with affiliate links</description>
-        {rss_items}
-    </channel>
-    </rss>
-    """
-
+<rss version="2.0">
+<channel>
+    <title>Amazon Deals Feed</title>
+    <link>{AMAZON_DEALS_URL}</link>
+    <description>Today's top Amazon deals with affiliate links</description>
+    {rss_items}
+</channel>
+</rss>
+"""
     with open("rss.xml", "w", encoding="utf-8") as f:
         f.write(rss_feed)
-    print("✅ RSS feed generated!")
+    print("✅ RSS feed generated")
 
 if __name__ == "__main__":
     deals = extract_deals()
@@ -63,4 +58,5 @@ if __name__ == "__main__":
         create_rss(deals)
     else:
         print("❌ No deals found.")
+
 
