@@ -1,16 +1,16 @@
-name: scrape
+name: Scrape Amazon Deals & Update RSS Feed
 
 on:
   schedule:
-    - cron: "0 */5 * * *"
-  workflow_dispatch:
+    - cron: "0 */5 * * *"  # Every 5 hours
+  workflow_dispatch:        # Manual trigger option
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -24,10 +24,11 @@ jobs:
       - name: Run scraper
         run: python amazon_deals_rss.py
 
-      - name: Commit and push rss.xml
+      - name: Commit and push RSS
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add rss.xml
           git commit -m "Update RSS feed" || echo "No changes to commit"
           git push
+
