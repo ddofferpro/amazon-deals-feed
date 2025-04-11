@@ -15,10 +15,14 @@ def generate_rss():
 
     rss_items = ""
     for deal in deals[:10]:  # Top 10 deals
-        title = html.escape(deal.get("title", "Amazon Deal").replace("₹", "Rs"))
-        link = html.escape(deal.get("link", "#"))
+        title_raw = deal.get("title", "Amazon Deal").replace("₹", "Rs")
+        description_raw = deal.get("description", "Top Amazon deal").replace("₹", "Rs")
+        link_raw = deal.get("link", "#")
+
+        title = html.escape(title_raw)
+        description = html.escape(description_raw)
+        link = html.escape(link_raw)
         guid = link
-        description = html.escape(deal.get("description", "Top Amazon deal").replace("₹", "Rs"))
 
         rss_items += f"""
         <item>
