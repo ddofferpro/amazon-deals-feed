@@ -15,10 +15,10 @@ def generate_rss():
 
     rss_items = ""
     for deal in deals[:10]:  # Top 10 deals
-        title = html.escape(deal.get("title", "Amazon Deal"))  # ✅ Escaped
-        link = deal.get("link", "#")
-        guid = link
-        description = html.escape(deal.get("description", "Top Amazon deal"))  # ✅ Escaped
+        title = html.escape(deal.get("title", "Amazon Deal"))
+        link = html.escape(deal.get("link", "#"))
+        guid = html.escape(link)
+        description = html.escape(deal.get("description", "Top Amazon deal"))
 
         rss_items += f"""
         <item>
@@ -33,7 +33,7 @@ def generate_rss():
 <rss version="2.0">
 <channel>
     <title>Amazon Deals Feed</title>
-    <link>{AMAZON_DEALS_URL}</link>
+    <link>{html.escape(AMAZON_DEALS_URL)}</link>
     <description>Today's top Amazon deals with affiliate links</description>
     <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
     {rss_items}
