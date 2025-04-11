@@ -1,4 +1,5 @@
 import json
+import html
 from datetime import datetime
 
 AFFILIATE_TAG = "dd1430e-21"
@@ -14,10 +15,10 @@ def generate_rss():
 
     rss_items = ""
     for deal in deals[:10]:  # Top 10 deals
-        title = deal.get("title", "Amazon Deal")
+        title = html.escape(deal.get("title", "Amazon Deal"))  # ✅ Escaped
         link = deal.get("link", "#")
         guid = link
-        description = deal.get("description", "Top Amazon deal")
+        description = html.escape(deal.get("description", "Top Amazon deal"))  # ✅ Escaped
 
         rss_items += f"""
         <item>
