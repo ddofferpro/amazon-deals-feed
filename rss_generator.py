@@ -1,12 +1,12 @@
 import json
-import html
 from datetime import datetime
+import xml.sax.saxutils as saxutils
 
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 
-def escape_xml(text):
-    return html.escape(text, quote=True).replace("&", "&amp;")
+def xml_escape(text):
+    return saxutils.escape(text)
 
 def generate_rss():
     try:
@@ -18,10 +18,10 @@ def generate_rss():
 
     rss_items = ""
     for deal in deals[:10]:  # Top 10 deals
-        title = escape_xml(deal.get("title", "Amazon Deal"))
-        link = escape_xml(deal.get("link", "#"))
-        guid = escape_xml(link)
-        description = escape_xml(deal.get("description", "Top Amazon deal"))
+        title = xml_escape(deal.get("title", "Amazon Deal"))
+        link = xml_escape(deal.get("link", "#"))
+        guid = link
+        description = xml_escape(deal.get("description", "Top Amazon deal"))
 
         rss_items += f"""
         <item>
@@ -35,9 +35,9 @@ def generate_rss():
     rss_feed = f"""<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-    <title>Amazon Deals Feed</title>
-    <link>{escape_xml(AMAZON_DEALS_URL)}</link>
-    <description>Today's top Amazon deals with affiliate links</description>
+    <title>{xml_escape("Amazon Deals Feed")}</title>
+    <link>{xml_escape(AMAZON_DEALS_URL)}</link>
+    <description>{xml_escape("Today's top Amazon deals with affiliate links")}</description>
     <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
     {rss_items}
 </channel>
