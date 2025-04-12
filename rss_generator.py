@@ -3,14 +3,14 @@ import html
 from datetime import datetime
 
 AFFILIATE_TAG = "dd1430e-21"
-AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
+DEFAULT_LINK = "https://www.amazon.in/deals?tag=" + AFFILIATE_TAG  # fallback
 
 def sanitize(text):
     if not isinstance(text, str):
         return ""
     text = text.replace("₹", "Rs")       # Replace rupee symbol
-    text = text.replace("&", "&amp;")    # Escape & explicitly first
-    text = html.escape(text)             # Escape < > " '
+    text = text.replace("&", "&amp;")    # Escape &
+    text = html.escape(text)             # Escape other XML special chars
     return text
 
 def generate_rss():
@@ -22,11 +22,15 @@ def generate_rss():
         return
 
     rss_items = ""
-    for deal in deals[:10]:  # Top 10 deals
+    top_link = DEFAULT_LINK  # Default if no deals
+    for i, deal in enumerate(deals[:10]):  # Top 10 deals
         title = sanitize(deal.get("title", "Amazon Deal"))
         link = sanitize(deal.get("link", "#"))
         guid = link
         description = sanitize(deal.get("description", "Top Amazon deal"))
+
+        if i == 0 and link != "#":
+            top_link = link  # Use first deal link as <channel><link>
 
         rss_items += f"""
         <item>
@@ -41,7 +45,7 @@ def generate_rss():
 <rss version="2.0">
 <channel>
     <title>Amazon Deals Feed</title>
-    <link>{AMAZON_DEALS_URL}</link>
+    <link>{top_link}</link>
     <description>Today's top Amazon deals with affiliate links</description>
     <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
     {rss_items}
