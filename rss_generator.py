@@ -1,16 +1,16 @@
 import json
-from datetime import datetime
 import html
+from datetime import datetime
 
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 
 def sanitize(text):
-    # Convert ₹ to Rs and escape XML special characters
-    if not text:
+    if not isinstance(text, str):
         return ""
-    text = text.replace("₹", "Rs")
-    return html.escape(text)
+    text = text.replace("₹", "Rs")           # Replace rupee symbol
+    text = html.escape(text)                 # Escape &, <, >, ", '
+    return text
 
 def generate_rss():
     try:
