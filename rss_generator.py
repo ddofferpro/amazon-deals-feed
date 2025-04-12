@@ -8,8 +8,9 @@ AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 def sanitize(text):
     if not isinstance(text, str):
         return ""
-    text = text.replace("₹", "Rs")           # Replace rupee symbol
-    text = html.escape(text)                 # Escape &, <, >, ", '
+    text = text.replace("₹", "Rs")       # Replace rupee symbol
+    text = text.replace("&", "&amp;")    # Escape & explicitly first
+    text = html.escape(text)             # Escape < > " '
     return text
 
 def generate_rss():
