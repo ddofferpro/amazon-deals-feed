@@ -6,12 +6,11 @@ AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 
 def sanitize(text):
-    """Replace special characters that break XML."""
+    """Escape XML special characters and replace ₹ with Rs."""
     if not text:
         return ""
     text = text.replace("₹", "Rs")
-    text = html.escape(text)
-    return text
+    return html.escape(text)
 
 def generate_rss():
     try:
@@ -40,9 +39,9 @@ def generate_rss():
     rss_feed = f"""<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-    <title>Amazon Deals Feed</title>
-    <link>{AMAZON_DEALS_URL}</link>
-    <description>Today's top Amazon deals with affiliate links</description>
+    <title>{sanitize("Amazon Deals Feed")}</title>
+    <link>{sanitize(AMAZON_DEALS_URL)}</link>
+    <description>{sanitize("Today's top Amazon deals with affiliate links")}</description>
     <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
     {rss_items}
 </channel>
