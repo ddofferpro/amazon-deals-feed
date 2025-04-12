@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import html
+import xml.etree.ElementTree as ET
 
 AFFILIATE_TAG = "dd1430e-21"
 
@@ -26,6 +27,7 @@ def generate_rss():
         guid = link
         description = html.escape(deal.get("description", "Top Amazon deal").replace("₹", "Rs"))
 
+        # Ensure that the title, link, and description are properly escaped for XML
         rss_items += f"""
         <item>
             <title>{title}</title>
@@ -47,6 +49,16 @@ def generate_rss():
 </rss>
 """
 
+    # Validate the XML before saving it
+    try:
+        # Try to parse the generated XML to ensure it's valid
+        ET.fromstring(rss_feed)
+        print("✅ RSS feed is well-formed.")
+    except ET.ParseError as e:
+        print(f"❌ Error parsing XML: {e}")
+        return
+
+    # Save the well-formed XML to a file
     with open("rss.xml", "w", encoding="utf-8") as f:
         f.write(rss_feed)
 
