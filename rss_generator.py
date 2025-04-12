@@ -5,6 +5,14 @@ import html
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
 
+def sanitize(text):
+    """Replace special characters that break XML."""
+    if not text:
+        return ""
+    text = text.replace("₹", "Rs")
+    text = html.escape(text)
+    return text
+
 def generate_rss():
     try:
         with open("deals.json", "r", encoding="utf-8") as f:
@@ -15,14 +23,10 @@ def generate_rss():
 
     rss_items = ""
     for deal in deals[:10]:  # Top 10 deals
-        title_raw = deal.get("title", "Amazon Deal").replace("₹", "Rs")
-        description_raw = deal.get("description", "Top Amazon deal").replace("₹", "Rs")
-        link_raw = deal.get("link", "#")
-
-        title = html.escape(title_raw)
-        description = html.escape(description_raw)
-        link = html.escape(link_raw)
+        title = sanitize(deal.get("title", "Amazon Deal"))
+        link = sanitize(deal.get("link", "#"))
         guid = link
+        description = sanitize(deal.get("description", "Top Amazon deal"))
 
         rss_items += f"""
         <item>
