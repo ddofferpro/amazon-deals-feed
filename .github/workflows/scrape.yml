@@ -30,8 +30,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Configure Git user for the commit
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          
+          # Check if rss.xml is updated
           git add rss.xml
           git commit -m "Update RSS feed" || echo "No changes to commit"
+          
+          # Push the changes to the repository
           git push
