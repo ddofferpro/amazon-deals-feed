@@ -1,17 +1,8 @@
 import json
-import html
 from datetime import datetime
+import html
 
 AFFILIATE_TAG = "dd1430e-21"
-DEFAULT_LINK = "https://www.amazon.in/deals?tag=" + AFFILIATE_TAG  # fallback
-
-def sanitize(text):
-    if not isinstance(text, str):
-        return ""
-    text = text.replace("₹", "Rs")       # Replace rupee symbol
-    text = text.replace("&", "&amp;")    # Escape &
-    text = html.escape(text)             # Escape other XML special chars
-    return text
 
 def generate_rss():
     try:
@@ -21,16 +12,19 @@ def generate_rss():
         print("❌ deals.json not found. Run scraper first.")
         return
 
-    rss_items = ""
-    top_link = DEFAULT_LINK  # Default if no deals
-    for i, deal in enumerate(deals[:10]):  # Top 10 deals
-        title = sanitize(deal.get("title", "Amazon Deal"))
-        link = sanitize(deal.get("link", "#"))
-        guid = link
-        description = sanitize(deal.get("description", "Top Amazon deal"))
+    if not deals:
+        print("❌ No deals found in deals.json.")
+        return
 
-        if i == 0 and link != "#":
-            top_link = link  # Use first deal link as <channel><link>
+    # Use the first deal's link as the main feed link
+    main_link = deals[0].get("link", "https://www.amazon.in")
+
+    rss_items = ""
+    for deal in deals[:10]:  # Top 10 deals
+        title = html.escape(deal.get("title", "Amazon Deal").replace("₹", "Rs"))
+        link = deal.get("link", "#")
+        guid = link
+        description = html.escape(deal.get("description", "Top Amazon deal").replace("₹", "Rs"))
 
         rss_items += f"""
         <item>
@@ -45,7 +39,7 @@ def generate_rss():
 <rss version="2.0">
 <channel>
     <title>Amazon Deals Feed</title>
-    <link>{top_link}</link>
+    <link>{main_link}</link>
     <description>Today's top Amazon deals with affiliate links</description>
     <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
     {rss_items}
