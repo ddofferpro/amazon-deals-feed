@@ -1,31 +1,93 @@
-import xml.etree.ElementTree as ET
-from xml.sax.saxutils import escape
-from datetime import datetime
-
-def escape_all(text):
-    if not text:
-        return ''
-    return escape(text, {'"': "&quot;", "'": "&apos;"})
-
-def generate_rss(deals, output_file="rss.xml"):
-    rss = ET.Element("rss", version="2.0")
-    channel = ET.SubElement(rss, "channel")
-
-    ET.SubElement(channel, "title").text = "Amazon Deals Feed"
-    ET.SubElement(channel, "link").text = "https://www.amazon.in/gp/goldbox"
-    ET.SubElement(channel, "description").text = "Today's top Amazon deals with affiliate links"
-
-    for deal in deals[:30]:  # Take up to 30 deals
-        item = ET.SubElement(channel, "item")
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+    <title>Amazon Deals Feed</title>
+    <link>https://www.amazon.in/gp/goldbox</link>
+    <description>Today's top Amazon deals with affiliate links</description>
+    
+        <item>
+            <title>Nirmalaya Premium Cow Dung Havan Cups/Sambrani Cups | Contains Guggal, Lobaan, Jatamassi and Other Herbs | 15 Cups with Ceramic Stand | 100% Organic | Best for Positivity &amp; Pooja₹240.00₹24000M.R.P:₹300.00₹300.00</title>
+            <link>https://www.amazon.in/dp/B0BC1KVT3R?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B0BC1KVT3R?tag=dd1430e-21</guid>
+        </item>
         
-        title = escape_all(deal.get("title", "No Title"))
-        link = escape_all(deal.get("link", ""))
-        description = escape_all(deal.get("price", "No Price"))
-
-        ET.SubElement(item, "title").text = title
-        ET.SubElement(item, "link").text = link
-        ET.SubElement(item, "description").text = description
-        ET.SubElement(item, "pubDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
-
-    tree = ET.ElementTree(rss)
-    tree.write(output_file, encoding="utf-8", xml_declaration=True)
+        <item>
+            <title>Wall1ders 1.5 Feet Sun Golden, Mirror Stickers for Wall, Acrylic Mirror Wall Decor Sticker, Wall Mirror Stickers, Acrylic Stickers, Wall Stickers for Hall Room (Gold, Large Size, self-adhesive, 45 cm)₹160.00₹16000M.R.P:₹999.00₹999.00</title>
+            <link>https://www.amazon.in/dp/B071RV9WZ9?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B071RV9WZ9?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>pranjals house Metal Krishna Playing Basuri Round Frame Wall Hanging For Decor (23&quot; Multicolour)₹1,510.00₹1,51000M.R.P:₹2,199.00₹2,199.00</title>
+            <link>https://www.amazon.in/dp/B08VWJYRFM?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B08VWJYRFM?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>Kemflo Polypropylene Purerite Sediment Water Filter - 4 Pcs₹280.00₹28000M.R.P:₹399.00₹399.00</title>
+            <link>https://www.amazon.in/dp/B01DF7GS1O?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B01DF7GS1O?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>UAPAN Brass Bell Decorative Pooja Room Bells with J Hook (Silver Gold_2 inch, Pack of 12)₹664.00₹66400M.R.P:₹1,999.00₹1,999.00</title>
+            <link>https://www.amazon.in/dp/B07VH3GYYC?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B07VH3GYYC?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>ADA Handicraft® Lord Shiva &amp; Family Photo Frame for Wall and Pooja/Poster for Pooja/Religious Framed Painting for Worship (35 x 25) cm ,Wood ,Multicolor₹299.00₹29900M.R.P:₹1,499.00₹1,499.00</title>
+            <link>https://www.amazon.in/dp/B01MF8Z2CT?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B01MF8Z2CT?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>Yellow Weaves Anti-Slip Solid Kitchen Mat For Shelf/Shelf Liners Sheet For Cabinet Drawer/Wardrobe/Fridge/Table (45Cm X 5 Meters Roll, Dark Brown, Polyvinyl Chloride Pvc)₹449.00₹44900M.R.P:₹799.00₹799.00</title>
+            <link>https://www.amazon.in/dp/B08L57K4KQ?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B08L57K4KQ?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>SATYAM KRAFT 12 Pcs Artificial Big Fake Foam Hawaii Beach Plumeria Floating Flower - Vibrant Decorative Floral for Home Decor, Events, and DIY Projects, Wedding (Hawaii Flower 12)₹199.00₹19900M.R.P:₹1,200.00₹1,200.00</title>
+            <link>https://www.amazon.in/dp/B0BZHBFFPL?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B0BZHBFFPL?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>Chaka Chaundh Acrylic - Suitable Swami Vivekananda Motivational Quotes Frames For Office&amp;Student- Framed Posters With Frame - Quotes Wall Frames - Photos With Quotes - (14 X 11 Inches)₹349.00₹34900M.R.P:₹1,399.00₹1,399.00</title>
+            <link>https://www.amazon.in/dp/B081FCLLBF?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B081FCLLBF?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>KHOOBREZ Air Fryers Cover Dust and Waterproof Washable for Kitchen Suits for Major Brand Air Fryers, Attractive Desing AR-M(Medium), Nylon₹284.00₹28400M.R.P:₹899.00₹899.00</title>
+            <link>https://www.amazon.in/dp/B09V1DJHFD?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B09V1DJHFD?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>Decorcrafts Stainless Steel Straws for Drinking with Brushes Pack of 10Pieces (4 Bent + 4 Straight + 2 Brushes) Long Steel Straws for Drinking Juice &amp; Drinks for Kids and Adults₹159.00₹15900M.R.P:₹499.00₹499.00</title>
+            <link>https://www.amazon.in/dp/B07YL1WVJY?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B07YL1WVJY?tag=dd1430e-21</guid>
+        </item>
+        
+        <item>
+            <title>PulGos Pure Brass Niranjan Kadi – Elegant Wick Holder for Diya and Oil Lamps, Perfect for Traditional Lighting and Spiritual Rituals, Thiri Stand for Deepak (Pack of 6 Gold)₹169.00₹16900M.R.P:₹399.00₹399.00</title>
+            <link>https://www.amazon.in/dp/B0CKLRBSDX?tag=dd1430e-21</link>
+            <description>Top Amazon deal</description>
+            <guid>https://www.amazon.in/dp/B0CKLRBSDX?tag=dd1430e-21</guid>
+        </item>
+        
+</channel>
+</rss>
