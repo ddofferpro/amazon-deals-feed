@@ -2,6 +2,11 @@ import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape
 from datetime import datetime
 
+def escape_all(text):
+    if not text:
+        return ''
+    return escape(text, {'"': "&quot;", "'": "&apos;", "&": "&amp;"})
+
 def generate_rss(deals, output_file="rss.xml"):
     rss = ET.Element("rss", version="2.0")
     channel = ET.SubElement(rss, "channel")
@@ -10,13 +15,12 @@ def generate_rss(deals, output_file="rss.xml"):
     ET.SubElement(channel, "link").text = "https://www.amazon.in/gp/goldbox"
     ET.SubElement(channel, "description").text = "Today's top Amazon deals with affiliate links"
 
-    for deal in deals[:30]:  # take first 30 deals
+    for deal in deals[:30]:  # first 30 deals
         item = ET.SubElement(channel, "item")
-        title = escape(deal.get("title", "No Title"))
-        link = deal.get("link", "")
-        # Ensure '&' in link is escaped
-        link = escape(link, {"&": "&amp;"})
-        description = escape(deal.get("price", "No Price"))
+        
+        title = escape_all(deal.get("title", "No Title"))
+        link = escape_all(deal.get("link", ""))
+        description = escape_all(deal.get("price", "No Price"))
 
         ET.SubElement(item, "title").text = title
         ET.SubElement(item, "link").text = link
