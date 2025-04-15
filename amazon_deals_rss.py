@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import html
 
 AFFILIATE_TAG = "dd1430e-21"
 AMAZON_DEALS_URL = "https://www.amazon.in/gp/goldbox"
@@ -10,21 +11,26 @@ def extract_deals():
     soup = BeautifulSoup(response.content, "html.parser")
 
     items = []
+    seen = set()
+
     for link in soup.find_all("a", href=True):
         href = link["href"]
         if "/dp/" in href:
             parts = href.split("/dp/")
             if len(parts) > 1:
                 product_id = parts[1].split("/")[0].split("?")[0][:10]
-                affiliate_url = f"https://www.amazon.in/dp/{product_id}?tag={AFFILIATE_TAG}"
-                title = link.text.strip() or f"Amazon Deal {product_id}"
-                items.append({
-                    "title": title,
-                    "link": affiliate_url,
-                    "guid": affiliate_url,
-                    "description": "Top Amazon deal"
-                })
-    return items[:10]
+                if product_id not in seen:
+                    seen.add(product_id)
+                    affiliate_url = f"https://www.amazon.in/dp/{product_id}?tag={AFFILIATE_TAG}"
+                    title = link.text.strip() or f"Amazon Deal {product_id}"
+                    title = html.escape(title)  # Avoid & issues in XML
+                    items.append({
+                        "title": title,
+                        "link": affiliate_url,
+                        "guid": affiliate_url,
+                        "description": "Top Amazon deal"
+                    })
+    return items[:30]
 
 def create_rss(deals):
     rss_items = ""
@@ -58,5 +64,3 @@ if __name__ == "__main__":
         create_rss(deals)
     else:
         print("❌ No deals found.")
-
-
