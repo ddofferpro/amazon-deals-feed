@@ -23,7 +23,7 @@ def extract_deals():
                     seen.add(product_id)
                     affiliate_url = f"https://www.amazon.in/dp/{product_id}?tag={AFFILIATE_TAG}"
                     title = link.text.strip() or f"Amazon Deal {product_id}"
-                    title = html.escape(title)  # Avoid & issues in XML
+                    title = html.escape(title)
                     items.append({
                         "title": title,
                         "link": affiliate_url,
@@ -54,9 +54,9 @@ def create_rss(deals):
 </channel>
 </rss>
 """
-    with open("rss.xml", "w", encoding="utf-8") as f:
+
+    with open("rss.xml", "w", encoding="utf-8", newline="\n") as f:
         f.write(rss_feed)
-    print("✅ RSS feed generated")
 
 if __name__ == "__main__":
     deals = extract_deals()
