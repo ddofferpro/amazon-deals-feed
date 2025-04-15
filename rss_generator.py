@@ -1,68 +1,27 @@
-import json
-from datetime import datetime
-import html
 import xml.etree.ElementTree as ET
+from xml.sax.saxutils import escape
+from datetime import datetime
 
-AFFILIATE_TAG = "dd1430e-21"
+def generate_rss(deals, output_file="rss.xml"):
+    rss = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(rss, "channel")
 
-def generate_rss():
-    try:
-        with open("deals.json", "r", encoding="utf-8") as f:
-            deals = json.load(f)
-    except FileNotFoundError:
-        print("❌ deals.json not found. Run scraper first.")
-        return
+    ET.SubElement(channel, "title").text = "Amazon Deals Feed"
+    ET.SubElement(channel, "link").text = "https://www.amazon.in/gp/goldbox"
+    ET.SubElement(channel, "description").text = "Today's top Amazon deals with affiliate links"
 
-    if not deals:
-        print("❌ No deals found in deals.json.")
-        return
+    for deal in deals[:30]:  # take first 30 deals
+        item = ET.SubElement(channel, "item")
+        title = escape(deal.get("title", "No Title"))
+        link = deal.get("link", "")
+        # Ensure '&' in link is escaped
+        link = escape(link, {"&": "&amp;"})
+        description = escape(deal.get("price", "No Price"))
 
-    # Use the first deal's link as the main feed link
-    main_link = deals[0].get("link", "https://www.amazon.in")
+        ET.SubElement(item, "title").text = title
+        ET.SubElement(item, "link").text = link
+        ET.SubElement(item, "description").text = description
+        ET.SubElement(item, "pubDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
 
-    rss_items = ""
-    for deal in deals[:10]:  # Top 10 deals
-        title = html.escape(deal.get("title", "Amazon Deal").replace("₹", "Rs"))
-        link = deal.get("link", "#")
-        guid = link
-        description = html.escape(deal.get("description", "Top Amazon deal").replace("₹", "Rs"))
-
-        # Ensure that the title, link, and description are properly escaped for XML
-        rss_items += f"""
-        <item>
-            <title>{title}</title>
-            <link>{link}</link>
-            <description>{description}</description>
-            <guid>{guid}</guid>
-        </item>
-        """
-
-    rss_feed = f"""<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
-<channel>
-    <title>Amazon Deals Feed</title>
-    <link>{main_link}</link>
-    <description>Today's top Amazon deals with affiliate links</description>
-    <lastBuildDate>{datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>
-    {rss_items}
-</channel>
-</rss>
-"""
-
-    # Validate the XML before saving it
-    try:
-        # Try to parse the generated XML to ensure it's valid
-        ET.fromstring(rss_feed)
-        print("✅ RSS feed is well-formed.")
-    except ET.ParseError as e:
-        print(f"❌ Error parsing XML: {e}")
-        return
-
-    # Save the well-formed XML to a file
-    with open("rss.xml", "w", encoding="utf-8") as f:
-        f.write(rss_feed)
-
-    print("✅ RSS file generated as rss.xml")
-
-if __name__ == "__main__":
-    generate_rss()
+    tree = ET.ElementTree(rss)
+    tree.write(output_file, encoding="utf-8", xml_declaration=True)
