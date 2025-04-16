@@ -1,26 +1,30 @@
-import os
-import feedparser
-import tweepy
+name: Tweet Amazon Deals
 
-# Load secrets from environment variables
-API_KEY = os.getenv("TWITTER_API_KEY")
-API_SECRET = os.getenv("TWITTER_API_SECRET")
-ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
-ACCESS_SECRET = os.getenv("TWITTER_ACCESS_SECRET")
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 5 * * *"
 
-# Authenticate with Twitter
-auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
-api = tweepy.API(auth)
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-# Load and parse the RSS feed
-feed_url = "https://ddofferpro.github.io/amazon-deals-feed/rss.xml"  # replace with your actual GitHub Pages URL
-feed = feedparser.parse(feed_url)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
 
-# Loop through the top 5 deals and tweet them
-for entry in feed.entries[:5]:
-    tweet = f"{entry.title}\n{entry.link}"
-    try:
-        api.update_status(tweet)
-        print("Tweeted:", tweet)
-    except Exception as e:
-        print("Error tweeting:", e)
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Tweet Script
+        working-directory: ./  # 👈 Ensures it's the root where your script lives
+        run: python tweet_from_rss.py
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
