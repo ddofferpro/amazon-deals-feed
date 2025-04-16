@@ -3,26 +3,27 @@ name: Tweet Amazon Deals
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 6 * * *'  # Change to preferred time
+    - cron: "30 5 * * *"
 
 jobs:
   tweet:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: 3.10
 
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r amazon-deals-feed/requirements.txt
 
       - name: Run Tweet Script
-        run: python amazon-deals-feed/tweet_from_rss.py
-        working-directory: ${{ github.workspace }}
+        run: |
+          cd amazon-deals-feed
+          python tweet_from_rss.py
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
