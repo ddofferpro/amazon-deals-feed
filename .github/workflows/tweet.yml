@@ -1,29 +1,31 @@
-name: Tweet Amazon Deals
+name: Post Amazon Deals to Twitter
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "30 5 * * *"
+    - cron: "0 10 * * *"  # Runs once a day at 10 AM UTC (adjust as per your peak time)
 
 jobs:
-  tweet:
+  post-tweet:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      # Step 1: Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Python 3.x
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: pip install -r amazon-deals-feed/requirements.txt
+        run: pip install -r requirements.txt  # Make sure requirements.txt is at the root
 
-      - name: Run Tweet Script
-        run: |
-          cd amazon-deals-feed
-          python tweet_from_rss.py
+      # Step 4: Run the script to post tweets
+      - name: Post tweets
+        run: python tweet_from_rss.py  # Ensure this script is at the root of the repo
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
