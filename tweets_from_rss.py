@@ -12,7 +12,7 @@ auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_secret
 api = tweepy.API(auth)
 
 # Parse RSS
-feed = feedparser.parse("https://yourusername.github.io/yourrepo/rss.xml")
+feed = feedparser.parse("https://ddofferpro.github.io/amazon-deals-feed/rss.xml")
 
 for entry in feed.entries[:5]:  # Change number of tweets if needed
     title = entry.title
