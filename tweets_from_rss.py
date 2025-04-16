@@ -1,25 +1,26 @@
+import os
 import feedparser
 import tweepy
-import os
 
-# Twitter Auth
-api_key = os.environ["TWITTER_API_KEY"]
-api_secret = os.environ["TWITTER_API_SECRET"]
-access_token = os.environ["TWITTER_ACCESS_TOKEN"]
-access_secret = os.environ["TWITTER_ACCESS_SECRET"]
+# Load secrets from environment variables
+API_KEY = os.getenv("TWITTER_API_KEY")
+API_SECRET = os.getenv("TWITTER_API_SECRET")
+ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
+ACCESS_SECRET = os.getenv("TWITTER_ACCESS_SECRET")
 
-auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_secret)
+# Authenticate with Twitter
+auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-# Parse RSS
-feed = feedparser.parse("https://ddofferpro.github.io/amazon-deals-feed/rss.xml")
+# Load and parse the RSS feed
+feed_url = "https://ddofferpro.github.io/amazon-deals-feed/rss.xml"  # replace with your actual GitHub Pages URL
+feed = feedparser.parse(feed_url)
 
-for entry in feed.entries[:5]:  # Change number of tweets if needed
-    title = entry.title
-    link = entry.link
-    tweet = f"{title}\n{link}"
+# Loop through the top 5 deals and tweet them
+for entry in feed.entries[:5]:
+    tweet = f"{entry.title}\n{entry.link}"
     try:
         api.update_status(tweet)
-        print(f"✅ Tweeted: {tweet}")
+        print("Tweeted:", tweet)
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print("Error tweeting:", e)
