@@ -1,9 +1,9 @@
-name: Post Amazon Deals to Twitter
+name: Tweet Amazon Deals
 
 on:
+  workflow_dispatch:  # Allows manual triggering from GitHub UI
   schedule:
-    - cron: "0 10 * * *"  # Every day at 10 AM UTC
-  workflow_dispatch:
+    - cron: '30 6 * * *'  # Runs daily at 6:30 AM UTC (change if needed)
 
 jobs:
   tweet:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -19,10 +19,10 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt  # ✅ No subfolder
+        run: pip install -r requirements.txt
 
-      - name: Run tweet script
-        run: python tweets_from_rss.py        # ✅ No subfolder
+      - name: Run Tweet Script
+        run: python tweets_from_rss.py
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
